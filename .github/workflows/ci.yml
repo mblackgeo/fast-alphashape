@@ -1,0 +1,82 @@
+name: ci
+
+on: [push]
+
+env:
+  PYTHON_VERSION: "3.7"
+
+jobs:
+  # ***************************************************************************
+  # Run linters and tests (all branches)
+  # ***************************************************************************
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      # TODO matrix of python versions
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - uses: actions/cache@v3
+        env:
+          cache-name: cache-cargo
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Build and install python package
+        run: pip install .
+
+      - name: Lint
+        run: make lint
+
+      - name: Test
+        run: make test
+
+  # ***************************************************************************
+  # Perform a semantic release (only on push to main branch)
+  # ***************************************************************************
+  # semantic-release:
+  #   needs: ci
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #         token: ${{ secrets.GIT_TOKEN }}
+
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: ${{ env.PYTHON_VERSION }}
+
+  #     - name: Install dependencies
+  #       run: pip install python-semantic-release==7.31.4
+
+  #     - name: Semantic Release
+  #       id: semrel
+  #       run: |
+  #         git config --global user.name "github-actions"
+  #         git config --global user.email "action@github.com"
+  #         semantic-release publish -D commit_author='github-actions <action@github.com>'
+  #       env:
+  #         GH_TOKEN: ${{ secrets.GIT_TOKEN }}
