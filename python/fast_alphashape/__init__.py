@@ -4,3 +4,5 @@ from ._fast_alphashape import *
 __doc__ = _fast_alphashape.__doc__
 if hasattr(_fast_alphashape, "__all__"):
     __all__ = _fast_alphashape.__all__
+
+__version__ = "0.1.0"
