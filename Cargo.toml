@@ -1,0 +1,17 @@
+[package]
+name = "fast-alphashape"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "_fast_alphashape"
+crate-type = ["cdylib", "rlib"]
+
+[package.metadata.maturin]
+python-source = "python"
+name = "fast_alphashape._fast_alphashape"
+
+
+[dependencies]
+pyo3 = { version = "0.17.1", features = ["extension-module"] }
