@@ -12,6 +12,9 @@ crate-type = ["cdylib", "rlib"]
 python-source = "python"
 name = "fast_alphashape._fast_alphashape"
 
-
 [dependencies]
 pyo3 = { version = "0.17.1", features = ["extension-module"] }
+ndarray = { version = "0.15.3" }
+
+[dev-dependencies]
+approx = "0.5.1"
