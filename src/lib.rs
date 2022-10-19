@@ -1,4 +1,5 @@
 #![allow(dead_code)]
+use delaunator::{triangulate, Point};
 use ndarray::*;
 use ndarray_linalg::*;
 use pyo3::prelude::*;
@@ -51,6 +52,23 @@ fn circumradius(points: ArrayView2<f64>) -> f64 {
     (slice - centre.dot(&points)).norm()
 }
 
+/// Returns simplices of the given set of points
+pub fn alpha_simplices(points: ArrayView2<f64>) -> Vec<f64> {
+    let pts: Vec<Point> = points
+        .axis_iter(Axis(0))
+        .map(|arr| Point {
+            x: arr[0],
+            y: arr[1],
+        })
+        .collect();
+
+    triangulate(&pts)
+        .triangles
+        .iter()
+        .map(|x| *x as f64)
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -73,5 +91,17 @@ mod tests {
         let res = circumradius(points.view());
 
         assert_relative_eq!(res, 0.625, epsilon = 1.0e-6);
+    }
+
+    #[test]
+    fn test_alpha_simplices() {
+        let points = array![[1.0, 0.0], [0.5, 0.25], [0.0, 0.0]];
+        let res = alpha_simplices(points.view());
+
+        println!("{:?}", res);
+
+        assert_relative_eq!(res[0] as f64, 1.0, epsilon = 1.0e-6);
+        assert_relative_eq!(res[1] as f64, 0.0, epsilon = 1.0e-6);
+        assert_relative_eq!(res[2] as f64, 2.0, epsilon = 1.0e-6);
     }
 }
