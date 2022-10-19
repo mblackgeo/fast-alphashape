@@ -45,7 +45,7 @@ pub fn circumcentre(points: ArrayView2<f64>) -> Array1<f64> {
 }
 
 /// Calculate the circumradius of a given set of points
-fn circumradius(points: ArrayView2<f64>) -> f64 {
+pub fn circumradius(points: ArrayView2<f64>) -> f64 {
     let slice = points.slice(s![0, ..]).to_owned();
     let centre = circumcentre(points.view());
 
