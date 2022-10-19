@@ -43,6 +43,14 @@ pub fn circumcentre(points: ArrayView2<f64>) -> Array1<f64> {
     res.slice(s![..-1]).to_owned()
 }
 
+/// Calculate the circumradius of a given set of points
+fn circumradius(points: ArrayView2<f64>) -> f64 {
+    let slice = points.slice(s![0, ..]).to_owned();
+    let centre = circumcentre(points.view());
+
+    (slice - centre.dot(&points)).norm()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -57,5 +65,13 @@ mod tests {
         assert_relative_eq!(res[0], 1.25, epsilon = 1.0e-6);
         assert_relative_eq!(res[1], -1.5, epsilon = 1.0e-6);
         assert_relative_eq!(res[2], 1.25, epsilon = 1.0e-6);
+    }
+
+    #[test]
+    fn test_circumradius() {
+        let points = array![[1.0, 0.0], [0.5, 0.25], [0.0, 0.0]];
+        let res = circumradius(points.view());
+
+        assert_relative_eq!(res, 0.625, epsilon = 1.0e-6);
     }
 }
