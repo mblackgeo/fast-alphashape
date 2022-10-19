@@ -13,8 +13,10 @@ python-source = "python"
 name = "fast_alphashape._fast_alphashape"
 
 [dependencies]
-pyo3 = { version = "0.17.1", features = ["extension-module"] }
-ndarray = { version = "0.15.3" }
+pyo3 = { version = "0.17.2", features = ["extension-module"] }
+ndarray = { version = "0.15.6" }
+openblas-src = { version = "0.10.5", features = ["static"] }
+ndarray-linalg = { version = "0.16.0", features = ["openblas"] }
 
 [dev-dependencies]
 approx = "0.5.1"
