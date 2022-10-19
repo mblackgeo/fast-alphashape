@@ -98,8 +98,6 @@ mod tests {
         let points = array![[1.0, 0.0], [0.5, 0.25], [0.0, 0.0]];
         let res = alpha_simplices(points.view());
 
-        println!("{:?}", res);
-
         assert_relative_eq!(res[0] as f64, 1.0, epsilon = 1.0e-6);
         assert_relative_eq!(res[1] as f64, 0.0, epsilon = 1.0e-6);
         assert_relative_eq!(res[2] as f64, 2.0, epsilon = 1.0e-6);
