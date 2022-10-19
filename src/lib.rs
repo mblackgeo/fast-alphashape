@@ -53,7 +53,7 @@ pub fn circumradius(points: ArrayView2<f64>) -> f64 {
 }
 
 /// Returns simplices of the given set of points
-pub fn alpha_simplices(points: ArrayView2<f64>) -> Vec<f64> {
+pub fn alpha_simplices(points: ArrayView2<f64>) -> Vec<i32> {
     let pts: Vec<Point> = points
         .axis_iter(Axis(0))
         .map(|arr| Point {
@@ -65,7 +65,7 @@ pub fn alpha_simplices(points: ArrayView2<f64>) -> Vec<f64> {
     triangulate(&pts)
         .triangles
         .iter()
-        .map(|x| *x as f64)
+        .map(|x| *x as i32)
         .collect()
 }
 
@@ -98,8 +98,8 @@ mod tests {
         let points = array![[1.0, 0.0], [0.5, 0.25], [0.0, 0.0]];
         let res = alpha_simplices(points.view());
 
-        assert_relative_eq!(res[0] as f64, 1.0, epsilon = 1.0e-6);
-        assert_relative_eq!(res[1] as f64, 0.0, epsilon = 1.0e-6);
-        assert_relative_eq!(res[2] as f64, 2.0, epsilon = 1.0e-6);
+        assert_eq!(res[0], 1);
+        assert_eq!(res[1], 0);
+        assert_eq!(res[2], 2);
     }
 }
