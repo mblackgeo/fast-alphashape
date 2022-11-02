@@ -1,19 +1,21 @@
-#![allow(dead_code)]
 use delaunator::{triangulate, Point};
+use itertools::Itertools;
 use ndarray::*;
 use ndarray_linalg::*;
+use numpy::*;
 use pyo3::prelude::*;
+use std::collections::HashSet;
 
-/// Formats the sum of two numbers as string.
+/// TODO
 #[pyfunction]
-fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
-    Ok((a + b).to_string())
+fn alpha_shape(points: PyReadonlyArray2<f64>, alpha: f64) -> PyResult<Vec<Vec<i32>>> {
+    Ok(alpha_shape_edges(points.as_array(), alpha))
 }
 
-/// A Python module implemented in Rust.
+/// TODO
 #[pymodule]
 fn _fast_alphashape(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(sum_as_string, m)?)?;
+    m.add_function(wrap_pyfunction!(alpha_shape, m)?)?;
     Ok(())
 }
 
@@ -69,6 +71,51 @@ pub fn alpha_simplices(points: ArrayView2<f64>) -> Vec<i32> {
         .collect()
 }
 
+// Return the indices of the array that form the edges of the 2D alpha shape
+pub fn alpha_shape_edges(points: ArrayView2<f64>, alpha: f64) -> Vec<Vec<i32>> {
+    // extract the simplex triangles
+    let simplexes: Vec<i32> = alpha_simplices(points.view());
+
+    // TODO separate this part out into a function
+    // store the circumradius of each simplex and the indices of the row
+    // of each point of the simplex
+    let mut point_indices: Vec<Vec<i32>> = Vec::new();
+    let mut radii: Vec<f64> = Vec::new();
+    for tri in simplexes.chunks_exact(3) {
+        let coords = stack![
+            Axis(0),
+            points.slice(s![tri[0], ..]),
+            points.slice(s![tri[1], ..]),
+            points.slice(s![tri[2], ..]),
+        ];
+        let rad = circumradius(coords.view());
+
+        // extract the indices of each point of the simplex
+        let mut idxs: Vec<i32> = Vec::new();
+        for c in coords.rows() {
+            for (idx, p) in points.rows().into_iter().enumerate() {
+                if p == c {
+                    idxs.push(idx as i32);
+                }
+            }
+        }
+        point_indices.push(idxs);
+        radii.push(rad);
+    }
+
+    // Create a set to hold unique edges of simplices that pass the radius
+    let mut edges: HashSet<Vec<i32>> = HashSet::new();
+    for (point_idxs, radius) in point_indices.into_iter().zip(radii) {
+        if radius < 1.0 / alpha {
+            for edge in point_idxs.into_iter().combinations(2) {
+                edges.insert(edge);
+            }
+        }
+    }
+
+    edges.into_iter().collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -101,5 +148,42 @@ mod tests {
         assert_eq!(res[0], 1);
         assert_eq!(res[1], 0);
         assert_eq!(res[2], 2);
+    }
+
+    #[test]
+    fn test_alpha_shape_edges() {
+        let points = array![
+            [0., 0.],
+            [0., 1.],
+            [1., 1.],
+            [1., 0.],
+            [0.5, 0.25],
+            [0.5, 0.75],
+            [0.25, 0.5],
+            [0.75, 0.5]
+        ];
+        let alpha = 2.0;
+
+        let mut expected = vec![
+            [7, 4],
+            [7, 3],
+            [3, 4],
+            [5, 4],
+            [4, 0],
+            [6, 1],
+            [6, 5],
+            [1, 5],
+            [4, 5],
+            [5, 7],
+            [0, 6],
+            [5, 2],
+            [4, 6],
+            [2, 7],
+        ];
+
+        let mut res = alpha_shape_edges(points.view(), alpha);
+
+        assert_eq!(res.len(), expected.len());
+        assert_eq!(res.sort(), expected.sort());
     }
 }
