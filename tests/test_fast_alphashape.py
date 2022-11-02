@@ -1,6 +1,7 @@
 import numpy as np
-from fast_alphashape import __version__, alphashape
 from shapely import wkt
+
+from fast_alphashape import __version__, alphashape
 
 
 def test_version():
