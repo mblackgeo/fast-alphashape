@@ -13,10 +13,10 @@ python-source = "python"
 name = "fast_alphashape._fast_alphashape"
 
 [dependencies]
-pyo3 = { version = "0.17.2", features = ["extension-module"] }
+pyo3 = { version = "0.17.3", features = ["extension-module", "abi3-py37"] }
 ndarray = { version = "0.15.6" }
 numpy = { version = "0.17.2" }
-openblas-src = { version = "0.10.5", features = ["static"] }
+openblas-src = { version = "0.10.5" }
 ndarray-linalg = { version = "0.16.0", features = ["openblas"] }
 delaunator = { version = "1.0.1" }
 itertools = { version = "0.10.5" }
