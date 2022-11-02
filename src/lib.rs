@@ -8,14 +8,14 @@ use std::collections::HashSet;
 
 /// TODO docs
 #[pyfunction]
-fn alpha_shape_wrapper(points: PyReadonlyArray2<f64>, alpha: f64) -> PyResult<Vec<Vec<i32>>> {
-    Ok(alpha_shape_edges(points.as_array(), alpha))
+fn alphashape_wrapper(points: PyReadonlyArray2<f64>, alpha: f64) -> PyResult<Vec<Vec<i32>>> {
+    Ok(alphashape_edges(points.as_array(), alpha))
 }
 
 /// TODO docs
 #[pymodule]
 fn _fast_alphashape(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(alpha_shape_wrapper, m)?)?;
+    m.add_function(wrap_pyfunction!(alphashape_wrapper, m)?)?;
     Ok(())
 }
 
@@ -73,7 +73,7 @@ pub fn alpha_simplices(points: ArrayView2<f64>) -> Vec<i32> {
 }
 
 // Return the indices of the array that form the edges of the 2D alpha shape
-pub fn alpha_shape_edges(points: ArrayView2<f64>, alpha: f64) -> Vec<Vec<i32>> {
+pub fn alphashape_edges(points: ArrayView2<f64>, alpha: f64) -> Vec<Vec<i32>> {
     // extract the simplex triangles
     let simplexes: Vec<i32> = alpha_simplices(points.view());
 
@@ -182,7 +182,7 @@ mod tests {
             [2, 7],
         ];
 
-        let mut res = alpha_shape_edges(points.view(), alpha);
+        let mut res = alphashape_edges(points.view(), alpha);
 
         assert_eq!(res.len(), expected.len());
         assert_eq!(res.sort(), expected.sort());
