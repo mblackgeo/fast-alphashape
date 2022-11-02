@@ -53,30 +53,30 @@ jobs:
   # ***************************************************************************
   # Perform a semantic release (only on push to main branch)
   # ***************************************************************************
-  # semantic-release:
-  #   needs: ci
-  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  semantic-release:
+    needs: ci
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
-  #         token: ${{ secrets.GIT_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GIT_TOKEN }}
 
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: ${{ env.PYTHON_VERSION }}
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-  #     - name: Install dependencies
-  #       run: pip install python-semantic-release==7.31.4
+      - name: Install dependencies
+        run: pip install python-semantic-release==7.31.4
 
-  #     - name: Semantic Release
-  #       id: semrel
-  #       run: |
-  #         git config --global user.name "github-actions"
-  #         git config --global user.email "action@github.com"
-  #         semantic-release publish -D commit_author='github-actions <action@github.com>'
-  #       env:
-  #         GH_TOKEN: ${{ secrets.GIT_TOKEN }}
+      - name: Semantic Release
+        id: semrel
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "action@github.com"
+          semantic-release publish -D commit_author='github-actions <action@github.com>'
+        env:
+          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
