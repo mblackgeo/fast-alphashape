@@ -6,16 +6,16 @@ use numpy::*;
 use pyo3::prelude::*;
 use std::collections::HashSet;
 
-/// TODO
+/// TODO docs
 #[pyfunction]
-fn alpha_shape(points: PyReadonlyArray2<f64>, alpha: f64) -> PyResult<Vec<Vec<i32>>> {
+fn alpha_shape_wrapper(points: PyReadonlyArray2<f64>, alpha: f64) -> PyResult<Vec<Vec<i32>>> {
     Ok(alpha_shape_edges(points.as_array(), alpha))
 }
 
-/// TODO
+/// TODO docs
 #[pymodule]
 fn _fast_alphashape(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(alpha_shape, m)?)?;
+    m.add_function(wrap_pyfunction!(alpha_shape_wrapper, m)?)?;
     Ok(())
 }
 
@@ -42,6 +42,7 @@ pub fn circumcentre(points: ArrayView2<f64>) -> Array1<f64> {
     ];
 
     // solve
+    // TODO error handling here for failure to converge
     let res = matrix.solve_into(ord).unwrap();
     res.slice(s![..-1]).to_owned()
 }
