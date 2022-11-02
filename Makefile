@@ -21,19 +21,12 @@ build:  ## Build the optimised release binaries
 lint:  ## Run linting checks with cargo, flake8, isort, and black
 	cargo fmt --check
 	cargo clippy -- -D warnings
-	flake8 .
-	black --check .
-	isort -c .
+	flake8 python/
+	black --check python/
+	isort -c python/
 
 .PHONY: test
 test: build  ## Run the test suite using cargo and pytest
 	cargo test
 	pytest tests
 
-.PHONY: bench-py
-bench-py: build ## Run the Python benchmarks
-	pytest benches/bench.py --benchmark-columns="min, max, mean, median"
-
-.PHONY: bench-rs
-bench-rs: ## Run the Rust benchmarks
-	cargo bench
