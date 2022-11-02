@@ -4,13 +4,65 @@ build-backend = "maturin"
 
 [project]
 name = "fast-alphashape"
+version = "0.0.0"
 requires-python = ">=3.7"
-classifiers = [
-    "Programming Language :: Rust",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
+description = "A Rust backed implementation for generating 2D alpha shapes from points"
+authors = [
+    { name = "Martin Black", email = "18327836+mblackgeo@users.noreply.github.com" },
 ]
-dependencies = ["numpy~=1.0", "shapely~=1.0"]
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/mblackgeo/fast-alphashape"
+Repository = "https://github.com/mblackgeo/fast-alphashape"
 
 [tool.maturin]
 python-source = "python"
+
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["fast_alphashape"]
+
+[tool.semantic_release]
+version_variable = ["python/fast_alphashape/__init__.py:__version__"]
+version_toml = ["pyproject.toml:project.version", "Cargo.toml:package.version"]
+build_command = ""
+major_on_zero = true
+branch = "main"
+upload_to_pypi = false
+upload_to_repository = false
+upload_to_release = false
+changelog_file = "CHANGELOG.md"
