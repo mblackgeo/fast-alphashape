@@ -1,5 +1,17 @@
 <!--next-version-placeholder-->
 
+## v0.2.0 (2022-11-23)
+### Feature
+* Perform a few array operations in parallel ([`542f2c9`](https://github.com/mblackgeo/fast-alphashape/commit/542f2c9f06b0dcae19e87b04100b24aad14fbeab))
+* Calculate alpashape edges in parallel ([`422cc4c`](https://github.com/mblackgeo/fast-alphashape/commit/422cc4c5df1a54b9760538827aa74ae27c090c7a))
+* Support shapely and geopandas inputs ([`2daaf22`](https://github.com/mblackgeo/fast-alphashape/commit/2daaf22b91b3ab12f65488b8907f628a3231f35f))
+
+### Documentation
+* Add note regarding alpha status ([`0688095`](https://github.com/mblackgeo/fast-alphashape/commit/068809582a938e3c26518e9754140ee6bd96ce0e))
+
+### Performance
+* Add rust and python benchmarks ([`db35361`](https://github.com/mblackgeo/fast-alphashape/commit/db35361958e8d9e395640359389145a6ce8bfa2e))
+
 ## v0.1.0 (2022-11-03)
 ### Feature
 * Add basic python interface ([`b6cea4b`](https://github.com/mblackgeo/fast-alphashape/commit/b6cea4befd6da2c04750331414b8a36bc304d202))
