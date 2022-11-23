@@ -14,7 +14,7 @@ name = "fast_alphashape._fast_alphashape"
 
 [dependencies]
 pyo3 = { version = "0.17.3", features = ["extension-module", "abi3-py37"] }
-ndarray = { version = "0.15.6" }
+ndarray = { version = "0.15.6", features = ["rayon"] }
 numpy = { version = "0.17.2" }
 openblas-src = { version = "0.10.5" }
 ndarray-linalg = { version = "0.16.0", features = ["openblas"] }
