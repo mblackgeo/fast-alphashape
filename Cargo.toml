@@ -20,6 +20,7 @@ openblas-src = { version = "0.10.5" }
 ndarray-linalg = { version = "0.16.0", features = ["openblas"] }
 delaunator = { version = "1.0.1" }
 itertools = { version = "0.10.5" }
+rayon = { version = "1.6.0" }
 
 [dev-dependencies]
 approx = "0.5.1"

@@ -275,6 +275,7 @@ dependencies = [
  "numpy",
  "openblas-src",
  "pyo3",
+ "rayon",
 ]
 
 [[package]]
