@@ -5,6 +5,7 @@ maturin==0.13.6
 numpy~=1.0
 pre-commit~=2.0
 pytest~=7.0
+py~=1.0
 
 # for benchmarking
 pytest-benchmark~=3.0
