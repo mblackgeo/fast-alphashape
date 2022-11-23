@@ -1,5 +1,6 @@
 use delaunator::{triangulate, Point};
 use itertools::Itertools;
+use ndarray::parallel::prelude::*;
 use ndarray::*;
 use ndarray_linalg::*;
 use numpy::*;
@@ -60,6 +61,7 @@ pub fn circumradius(points: ArrayView2<f64>) -> f64 {
 pub fn alpha_simplices(points: ArrayView2<f64>) -> Vec<i32> {
     let pts: Vec<Point> = points
         .axis_iter(Axis(0))
+        .into_par_iter()
         .map(|arr| Point {
             x: arr[0],
             y: arr[1],
@@ -68,7 +70,7 @@ pub fn alpha_simplices(points: ArrayView2<f64>) -> Vec<i32> {
 
     triangulate(&pts)
         .triangles
-        .iter()
+        .par_iter()
         .map(|x| *x as i32)
         .collect()
 }
