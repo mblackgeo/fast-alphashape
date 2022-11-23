@@ -7,6 +7,8 @@
 
 A Rust backed implementation for generating 2D [alpha shapes](https://en.wikipedia.org/wiki/Alpha_shape) from points.
 
+**This project is still a prototype and should not be considered production-ready.**
+
 ![Comparison of convex hull versus alpha shape](image.png)
 
 Alpha shapes are often used to generalise bounding polygons containing sets of points. The alpha parameter is defined as the value `a`, such that an edge of a disk of radius `1/a` can be drawn between any two edge members of a set of points and still contain all the points. The [convex hull](https://en.wikipedia.org/wiki/Convex_hull), a shape resembling what you would see if you wrapped a rubber band around pegs at all the data points, is an alpha shape where the alpha parameter is equal to zero.
