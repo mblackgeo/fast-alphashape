@@ -4,6 +4,7 @@ use ndarray::*;
 use ndarray_linalg::*;
 use numpy::*;
 use pyo3::prelude::*;
+use rayon::prelude::*;
 use std::collections::HashSet;
 
 /// TODO docs
@@ -72,49 +73,55 @@ pub fn alpha_simplices(points: ArrayView2<f64>) -> Vec<i32> {
         .collect()
 }
 
+/// Get the indices of each valid simplex
+pub fn get_edges(points: ArrayView2<f64>, tri: &[i32], alpha: f64) -> Vec<Vec<i32>> {
+    // extract the coordinates and circumradius for this simplex triangle
+    let coords = stack![
+        Axis(0),
+        points.slice(s![tri[0], ..]),
+        points.slice(s![tri[1], ..]),
+        points.slice(s![tri[2], ..]),
+    ];
+    let rad = circumradius(coords.view());
+
+    // extract the indices of each point of the simplex
+    let mut idxs: Vec<i32> = Vec::new();
+    for c in coords.rows() {
+        for (idx, p) in points.rows().into_iter().enumerate() {
+            if p == c {
+                idxs.push(idx as i32);
+            }
+        }
+    }
+
+    // add the points to edges if required
+    let mut edges = Vec::new();
+    if rad < 1.0 / alpha {
+        for edge in idxs.into_iter().combinations(2) {
+            edges.push(edge);
+        }
+    }
+
+    edges
+}
+
 // Return the indices of the array that form the edges of the 2D alpha shape
 pub fn alphashape_edges(points: ArrayView2<f64>, alpha: f64) -> Vec<Vec<i32>> {
     // extract the simplex triangles
     let simplexes: Vec<i32> = alpha_simplices(points.view());
 
-    // TODO separate this part out into a function
-    // store the circumradius of each simplex and the indices of the row
-    // of each point of the simplex
-    let mut point_indices: Vec<Vec<i32>> = Vec::new();
-    let mut radii: Vec<f64> = Vec::new();
-    for tri in simplexes.chunks_exact(3) {
-        let coords = stack![
-            Axis(0),
-            points.slice(s![tri[0], ..]),
-            points.slice(s![tri[1], ..]),
-            points.slice(s![tri[2], ..]),
-        ];
-        let rad = circumradius(coords.view());
+    let edges: Vec<Vec<Vec<i32>>> = simplexes
+        .par_chunks_exact(3)
+        .map(|tri| get_edges(points, tri, alpha))
+        .into_par_iter()
+        .collect();
 
-        // extract the indices of each point of the simplex
-        let mut idxs: Vec<i32> = Vec::new();
-        for c in coords.rows() {
-            for (idx, p) in points.rows().into_iter().enumerate() {
-                if p == c {
-                    idxs.push(idx as i32);
-                }
-            }
-        }
-        point_indices.push(idxs);
-        radii.push(rad);
+    let mut final_edges: HashSet<Vec<i32>> = HashSet::new();
+    for e in edges.into_iter().flatten() {
+        final_edges.insert(e);
     }
 
-    // Create a set to hold unique edges of simplices that pass the radius
-    let mut edges: HashSet<Vec<i32>> = HashSet::new();
-    for (point_idxs, radius) in point_indices.into_iter().zip(radii) {
-        if radius < 1.0 / alpha {
-            for edge in point_idxs.into_iter().combinations(2) {
-                edges.insert(edge);
-            }
-        }
-    }
-
-    edges.into_iter().collect()
+    final_edges.into_iter().collect()
 }
 
 #[cfg(test)]
