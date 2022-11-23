@@ -118,12 +118,12 @@ pub fn alphashape_edges(points: ArrayView2<f64>, alpha: f64) -> Vec<Vec<i32>> {
         .into_par_iter()
         .collect();
 
-    let mut final_edges: HashSet<Vec<i32>> = HashSet::new();
-    for e in edges.into_iter().flatten() {
-        final_edges.insert(e);
-    }
-
-    final_edges.into_iter().collect()
+    edges
+        .into_iter()
+        .flatten()
+        .collect::<HashSet<Vec<i32>>>()
+        .into_iter()
+        .collect()
 }
 
 #[cfg(test)]
