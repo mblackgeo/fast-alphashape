@@ -1,8 +1,8 @@
 # fast-alphashape
 
 [![PyPI](https://img.shields.io/pypi/v/fast-alphashape?style=for-the-badge)](https://pypi.org/project/fast-alphashape/)
-[![CI](https://img.shields.io/github/workflow/status/mblackgeo/fast-alphashape/ci?label=CI&style=for-the-badge)](https://github.com/mblackgeo/fast-alphashape/actions)
-[![Release](https://img.shields.io/github/workflow/status/mblackgeo/fast-alphashape/release?label=RELEASE&style=for-the-badge)](https://github.com/mblackgeo/fast-alphashape/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/mblackgeo/fast-alphashape/ci.yml?label=CI&style=for-the-badge)](https://github.com/mblackgeo/fast-alphashape/actions)
+[![Release](https://img.shields.io/github/actions/workflow/status/mblackgeo/fast-alphashape/release.yml?label=RELEASE&style=for-the-badge)](https://github.com/mblackgeo/fast-alphashape/actions)
 [![Code Style](https://img.shields.io/static/v1?label=code%20style&message=black&color=blue&style=for-the-badge)](https://github.com/psf/black)
 
 A Rust backed implementation for generating 2D [alpha shapes](https://en.wikipedia.org/wiki/Alpha_shape) from points.
